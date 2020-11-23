@@ -1,19 +1,49 @@
-<html>
-<head>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>   
-<label> input </label>
-<script>
-    async function run(){
-        const MODEL_URL = 'http://127.0.0.1:8887/model.json';
-        const model = await tf.loadLayersModel(MODEL_URL);
-        console.log(model.summary());
-        const input = tf.tensor2d([20], [1,1]);
-        const result = model.predict(input);
 
-        alert(result)
+
+<!doctype html>
+<html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>   
+<script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"> </script>
+
+<head>
+  <script>
+    async function loadModel() {
+      model = undefined;
+      model = await tf.loadLayersModel("http://127.0.0.1:8887/model.json");
+      console.log("model loaded")
     }
-    run();
-</script>
-</head> 
-<body></body>   
+    loadModel();
+
+    function make_prediction() {
+      var a, b, output;
+      a = Number(document.getElementById("first").value);
+      // b = Number(document.getElementById("second").value);
+      input_xs = tf.tensor2d([
+        [a] ,[1,1]
+      ]);
+      output = model.predict(input_xs);
+      const outputData = output.dataSync();
+      console.log(outputData)
+      document.getElementById("answer").value = Number(outputData[0]);
+    }
+  </script>
+</head>
+
+<body>
+  <center>
+    <p>prdict y </p>
+    <br>
+  </center>
+  <center>Enter the First number : <input id="first"></center>
+  <br> <br>
+ <!--  <center>Enter the Second number: <input id="second"></center>
+  <br> <br> -->
+  <center><button onclick="make_prediction()">predict Y</button></center>
+  <br> <br>
+  <center><input id="answer"></center>
+  <br> <br>
+</body>
+
 </html>
